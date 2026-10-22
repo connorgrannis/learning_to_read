@@ -14,6 +14,10 @@ If a device still runs old code after an update (e.g. on GitHub Pages, which cac
 
 Then open http://localhost:8000. To use it on the iPad, open `http://<your-mac's-IP>:8000` on the same Wi-Fi, or host the folder on GitHub Pages.
 
+## Put it on the home screen
+
+In Safari on the iPad: Share → **Add to Home Screen**. It then opens full screen with its own icon. The icon is drawn by `tools/make_icons.py` (run `python3 tools/make_icons.py` after editing it).
+
 ## Change the text — `sentences.json`
 
 One entry per page. Use `\n` inside an entry for a line break, so a page can be a sentence or a short story:
@@ -39,5 +43,7 @@ The current page is remembered on each device.
 ## Tapped words — `stats.html`
 
 Every word he taps is counted on the device (not "Read it to me"). Open `stats.html` (e.g. http://localhost:8000/stats.html) to see the words he's needed help with, most-tapped first, with a "Clear all" button. Nothing leaves the device.
+
+**From the home-screen app** (no address bar): press and hold the page counter at the top ("1 / 6") for about 1.5 seconds to open the stats page. On iPad/iPhone the home-screen app keeps its own counts, separate from Safari's.
 
 Counts are kept per device *and* per address: the iPad's counts at `http://10.x.x.x:8000` are separate from the ones on a GitHub Pages URL, so open `stats.html` at the same address he reads from.

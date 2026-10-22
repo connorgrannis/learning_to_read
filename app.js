@@ -18,6 +18,7 @@ const DEFAULT_CONFIG = {
 const STORAGE_KEY = "readAlongReader.v1";
 const TAPS_KEY = "readAlongReader.taps.v1"; // also read by stats.html
 const TAP_DEBOUNCE_MS = 300;
+const STATS_HOLD_MS = 1500; // parent shortcut: hold the page counter to open stats.html
 
 // ---------- State ----------
 
@@ -384,6 +385,21 @@ async function init() {
   els.readBtn.addEventListener("click", readItToMe);
   els.prevBtn.addEventListener("click", () => goTo(pageIndex - 1));
   els.nextBtn.addEventListener("click", () => goTo(pageIndex + 1));
+
+  // Parent shortcut to the tapped-words page. Needed when it runs from the home
+  // screen: there's no address bar, and that app keeps its own separate counts.
+  let holdTimer = null;
+  const cancelHold = () => clearTimeout(holdTimer);
+  els.pageCount.addEventListener("pointerdown", () => {
+    cancelHold();
+    holdTimer = setTimeout(() => {
+      stopAll();
+      location.href = "stats.html";
+    }, STATS_HOLD_MS);
+  });
+  for (const type of ["pointerup", "pointerleave", "pointercancel"]) {
+    els.pageCount.addEventListener(type, cancelHold);
+  }
 
   // Stop talking if the app is backgrounded.
   document.addEventListener("visibilitychange", () => {
