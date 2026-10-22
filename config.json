@@ -1,0 +1,11 @@
+{
+  "rate": 0.8,
+  "pitch": 1,
+  "pauseMs": 350,
+  "lang": "en-US",
+  "voiceName": "",
+  "readToMeDelaySeconds": 20,
+  "pronunciations": {
+    "a": "uh"
+  }
+}

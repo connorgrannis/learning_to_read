@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Read-Along Reader</title>
+  <!-- Bump ?v= when app.js or style.css changes, so devices that cached the old copy fetch the new one. -->
+  <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+  <!-- Start screen: the first speech must come from a tap (iOS requirement). -->
+  <section id="start-screen" class="screen">
+    <button id="start-btn" class="big-btn" aria-label="Start">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <p id="start-hint" class="hint">No sound? Turn the volume up and flip the ringer switch on.</p>
+    <p id="start-error" class="error" hidden></p>
+  </section>
+
+  <!-- Reader screen -->
+  <section id="reader-screen" class="screen" hidden>
+    <div id="page-count" class="page-count" aria-live="polite"></div>
+    <main id="text" class="text" aria-live="off"></main>
+    <p id="reader-error" class="error" hidden></p>
+
+    <nav class="controls">
+      <button id="prev-btn" class="ctrl-btn" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5 8 12l7.5 7.5"/></svg>
+      </button>
+      <button id="read-btn" class="ctrl-btn read-btn" aria-label="Read it to me" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="fill" d="M4 9v6h4l5 4V5L8 9z"/>
+          <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/>
+        </svg>
+      </button>
+      <button id="next-btn" class="ctrl-btn" aria-label="Next">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.5 16 12l-7.5 7.5"/></svg>
+      </button>
+    </nav>
+  </section>
+
+  <script src="app.js?v=2"></script>
+</body>
+</html>

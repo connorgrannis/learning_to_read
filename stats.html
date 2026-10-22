@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tapped Words</title>
+  <link rel="stylesheet" href="style.css?v=2">
+  <style>
+    /* Parent page: normal-sized text, selectable. */
+    body { -webkit-user-select: text; user-select: text; }
+    .stats { max-width: 640px; width: 100%; margin: 0 auto; }
+    h1 { font-size: 1.6rem; margin: 8px 0 4px; }
+    .sub { color: var(--muted); margin: 0 0 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 1.2rem; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #ece7d8; }
+    th { color: var(--muted); font-size: 0.9rem; font-weight: 600; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    th.num { text-align: right; }
+    td.when { color: var(--muted); font-size: 1rem; }
+    .row { display: flex; gap: 12px; justify-content: space-between; align-items: center; margin-top: 24px; }
+    .row a { color: var(--btn); }
+    .reset { background: transparent; color: var(--error); font-size: 1rem; padding: 10px 0; }
+    .empty { color: var(--muted); font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+  <section class="screen">
+    <div class="stats">
+      <h1>Tapped words</h1>
+      <p class="sub">Words he tapped for help on this device, most-tapped first.</p>
+      <div id="list"></div>
+      <div class="row">
+        <a href="./">Back to the reader</a>
+        <button id="reset" class="reset" hidden>Clear all</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    "use strict";
+
+    const TAPS_KEY = "readAlongReader.taps.v1"; // written by app.js
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(TAPS_KEY)) || {};
+      } catch {
+        return null; // storage unavailable
+      }
+    }
+
+    function formatWhen(iso) {
+      const d = new Date(iso);
+      const today = new Date();
+      const sameDay = d.toDateString() === today.toDateString();
+      return sameDay
+        ? `today ${d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+        : d.toLocaleDateString([], { month: "short", day: "numeric" });
+    }
+
+    function render() {
+      const list = document.getElementById("list");
+      const reset = document.getElementById("reset");
+      const taps = load();
+
+      if (taps === null) {
+        list.innerHTML = '<p class="empty">This browser is blocking storage, so taps can\'t be tracked.</p>';
+        return;
+      }
+
+      const rows = Object.entries(taps).sort(
+        (a, b) => b[1].count - a[1].count || b[1].last.localeCompare(a[1].last)
+      );
+      reset.hidden = rows.length === 0;
+
+      if (!rows.length) {
+        list.innerHTML = '<p class="empty">No taps yet.</p>';
+        return;
+      }
+
+      const table = document.createElement("table");
+      table.innerHTML = '<thead><tr><th>Word</th><th class="num">Taps</th><th>Last tapped</th></tr></thead>';
+      const body = document.createElement("tbody");
+      for (const [word, e] of rows) {
+        const tr = document.createElement("tr");
+        const cells = [[word, ""], [e.count, "num"], [formatWhen(e.last), "when"]];
+        for (const [text, cls] of cells) {
+          const td = document.createElement("td");
+          td.textContent = text;
+          if (cls) td.className = cls;
+          tr.appendChild(td);
+        }
+        body.appendChild(tr);
+      }
+      table.appendChild(body);
+      list.textContent = "";
+      list.appendChild(table);
+    }
+
+    document.getElementById("reset").addEventListener("click", () => {
+      if (!confirm("Clear all tapped-word counts on this device?")) return;
+      try { localStorage.removeItem(TAPS_KEY); } catch {}
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
